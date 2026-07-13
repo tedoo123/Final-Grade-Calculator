@@ -10,7 +10,7 @@
 
 using namespace std;
 
-void function1(), function2(), function3(int);
+void function1(), function2(), function3(double, double, double);
 
 struct Container{
     double grade;
@@ -82,20 +82,20 @@ void function2() {
     }
 
     goal = (target - finalGrade) / tempWeight;
-    cout << fixed << setprecision(2) << goal << endl;
 
     cout << "Implement curves? (Y/N)\n";
     cin >> YN;
 
     if (YN == 'Y' || YN == 'y') {
-        function3(finalGrade);
+        function3(finalGrade, target, tempWeight);
     } else {
-        cout << "Final grade: " << finalGrade << endl;
+        cout << "Min final score: " << fixed << setprecision(2) <<  goal << endl;
     }
 
 }
 
-void function3(int finalGrade) {
+void function3(double finalGrade, double target, double tempWeight) {
+    double goal;
     int curve;
     cout << "Select type of curve:\n"
          << "1. Root Curve\n"
@@ -106,11 +106,14 @@ void function3(int finalGrade) {
     cin >> curve;
     switch (curve) {
         case 1:
-            finalGrade = sqrt(finalGrade) * 10;
+            cout << "Square root curve is when square rooting your final grade in decimal and then turning it back into percentage. (e.g. 81% to 90%)\n"; 
+            goal = (pow((target / 10), 2) - finalGrade) / tempWeight;
             break;
         case 2:
 
             break;
 
     }
+
+    cout << "Min final score: " << fixed << setprecision(2) << goal << endl;
 }
