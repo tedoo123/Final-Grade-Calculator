@@ -7,13 +7,14 @@
 #include <vector>
 #include <iomanip>
 #include <cmath>
+#include <string>
 
 using namespace std;
 
 void function1(), function2(), function3(double, double, double);
 
 struct Container{
-    double grade;
+    vector<double> grades;
     double weight;
     string name;
 };
@@ -22,13 +23,14 @@ int main() {
     int func;
     cout << "Function 1 or 2?\n";
     cin >> func;
+    cin.ignore();
 
     switch (func) {
         case 1:
             function1();
             break;
         case 2:
-            function2();
+            //function2();
             break;
     }
 
@@ -41,25 +43,62 @@ int main() {
 
 // Ask for percentage and grade to calculate the final grade
 void function1() {
+    string name;
     vector<Container> container;
-    cout << "Send the name(no spaces), grade and weight of each category " <<
-            "in the format: (name grade weight), weight in decimal\nEnter -1 when done\n";
     double tempGrade, tempWeight, finalGrade = 0;
+    
+    while (true) {
+        Container category;
+        cout << "\nWhat is the name of the category?: \n";
+        cout << "Enter -1 when done\n";
+        getline(cin, name);
+        if (name == "-1") {
+            break;
+        }
+        category.name = name;
 
-    while (cin >> tempGrade && tempGrade != -1) {
-        cin >> tempWeight;
-        container.push_back({tempGrade, tempWeight});
+        cout << "\nWhat is the weight in decimal:\n";
+        while (true) {
+            cin >> category.weight;
+
+            if (category.weight >= 0 && category.weight <= 1)
+                break;
+
+            cout << "Weight must be between 0 and 1.\n";
+        }
+
+        cout << "\nWhat is the grades:\nType -1 when done\n";
+        while (cin >> tempGrade && tempGrade != -1) {
+            if (tempGrade < 0 || tempGrade > 100) {
+                cout << "Invalid grade. Enter 0-100. Please try again:\n";
+                continue;
+            }
+            category.grades.push_back(tempGrade);
+        }
+
+
+        cin.ignore();
+
+        container.push_back(category);
     }
 
-    for (const auto& grade : container) {
-        finalGrade += (grade.grade * grade.weight);
+    for (const auto& category : container) {
+        double sum = 0;
+
+        for (double grade : category.grades) {
+            sum += grade;
+        }
+
+        double average = sum / category.grades.size();
+
+        finalGrade += average * category.weight;
     }
 
-    cout << finalGrade;
+    cout << "Final grade:" << fixed << setprecision(2) << finalGrade << endl;
     
 }
 
-
+/*
 //Find minimum final exam grade to get a certain percentage
 void function2() {
     double target, tempGrade, tempWeight, finalGrade = 0, goal;
@@ -117,3 +156,5 @@ void function3(double finalGrade, double target, double tempWeight) {
 
     cout << "Min final score: " << fixed << setprecision(2) << goal << endl;
 }
+
+*/
