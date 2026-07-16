@@ -11,13 +11,13 @@
 
 using namespace std;
 
-void function1(), function2(), function3(double, double, double);
-
 struct Container{
     vector<double> grades;
     double weight;
     string name;
 };
+
+void function1(), function2(), function3(const Container&, double, double, double);
 
 int main() {
     int func;
@@ -40,7 +40,7 @@ int main() {
     return 0;
 }
 
-/*
+
 // Ask for percentage and grade to calculate the final grade
 void function1() {
     string name;
@@ -97,7 +97,7 @@ void function1() {
     cout << "Final grade:" << fixed << setprecision(2) << finalGrade << endl;
     
 }
-*/
+
 
 
 //Find minimum final exam grade to get a certain percentage
@@ -168,7 +168,7 @@ void function2() {
     while (cin >> YN) {
         if (toupper(static_cast<unsigned char>(YN)) == 'Y') {
             cout << "You said yes to curve!";
-            //function3(finalGrade, target, tempWeight);
+            //function3(container, finalGrade, target, tempWeight);
             break;
         } else if (toupper(static_cast<unsigned char>(YN)) == 'N') {
             cout << "Min final score: " << fixed << setprecision(2) <<  goal << endl;
@@ -180,8 +180,7 @@ void function2() {
 
 }
 
-/*
-void function3(double finalGrade, double target, double tempWeight) {
+void function3(const vector<Container>& container, double finalGrade, double target, double tempWeight) {
     double goal;
     int curve;
     cout << "Select type of curve:\n"
@@ -193,16 +192,44 @@ void function3(double finalGrade, double target, double tempWeight) {
     cin >> curve;
     switch (curve) {
         case 1:
-            cout << "Square root curve is when square rooting your final grade in decimal and then turning it back into percentage. (e.g. 81% to 90%)\n"; 
+            cout << "\nSquare root curve is when square rooting your final grade in decimal and then turning it back into percentage. (e.g. 81% to 90%)\n"; 
             goal = (pow((target / 10), 2) - finalGrade) / tempWeight;
             break;
         case 2:
+            double min;
+            bool foundQuizCategory = false;
 
+            for (const auto& category : container) {
+                // Find the category named "quiz" or "quizzes" (case-insensitive checks recommended, but simple string check here)
+                if (category.name == "quiz" || category.name == "quizzes" || category.name == "Quiz" || category.name == "Quizzes") {
+                    foundQuizCategory = true;
+                    if (category.grades.empty()) {
+                        cout << "Quiz category is empty!\n";
+                        break;
+                    }
+                    
+
+                    min = category.grades[0];
+                    for (double grade : category.grades) {
+                        if (grade < min) {
+                            min = grade;
+                        }
+                    }
+                }
+            }
+
+            if (foundQuizCategory) {
+                cout << "\nLowest quiz dropped: " << min << endl;
+            } else {
+                cout << "\nNo quiz category found to drop grades from.\n";
+            }
+
+            //Add New goal answer and also make this more effective by using pass by reference and
+            //moving the asking grades part to main so that we can use all functions easier 
             break;
+        }
 
-    }
-
-    cout << "Min final score: " << fixed << setprecision(2) << goal << endl;
+        
+        cout << "Min final score: " << fixed << setprecision(2) << goal << endl;
 }
-*/
 
