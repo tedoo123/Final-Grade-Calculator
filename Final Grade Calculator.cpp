@@ -27,10 +27,10 @@ int main() {
 
     switch (func) {
         case 1:
-            function1();
+            //function1();
             break;
         case 2:
-            //function2();
+            function2();
             break;
     }
 
@@ -40,7 +40,7 @@ int main() {
     return 0;
 }
 
-
+/*
 // Ask for percentage and grade to calculate the final grade
 void function1() {
     string name;
@@ -97,42 +97,90 @@ void function1() {
     cout << "Final grade:" << fixed << setprecision(2) << finalGrade << endl;
     
 }
+*/
 
-/*
+
 //Find minimum final exam grade to get a certain percentage
 void function2() {
-    double target, tempGrade, tempWeight, finalGrade = 0, goal;
-    char YN;
+    string name;
     vector<Container> container;
-    cout << "Send the grade and weight of each category in the format: (grade weight), weight in decimal\nEnter -1 when done\n";
+    double target, goal, tempGrade, tempWeight, finalGrade = 0;
+    
+    while (true) {
+        Container category;
+        cout << "\nWhat is the name of the category?: \n";
+        cout << "Enter -1 when done\n";
+        getline(cin, name);
+        if (name == "-1") {
+            break;
+        }
+        category.name = name;
 
-    while (cin >> tempGrade && tempGrade != -1) {
-        cin >> tempWeight;
-        container.push_back({tempGrade, tempWeight});
+        cout << "\nWhat is the weight in decimal:\n";
+        while (true) {
+            cin >> category.weight;
+
+            if (category.weight >= 0 && category.weight <= 1)
+                break;
+
+            cout << "Weight must be between 0 and 1.\n";
+        }
+
+        cout << "\nWhat is the grades:\nType -1 when done\n";
+        while (cin >> tempGrade && tempGrade != -1) {
+            if (tempGrade < 0 || tempGrade > 100) {
+                cout << "Invalid grade. Enter 0-100. Please try again:\n";
+                continue;
+            }
+            category.grades.push_back(tempGrade);
+        }
+
+
+        cin.ignore();
+
+        container.push_back(category);
     }
 
-    cout << "What percentage is your goal?\n";
+    cout << "\nWhat percentage is your goal?\n";
     cin >> target;
-    cout << "What weight is the final grade?\n";
+
+    cout << "\nWhat weight is the final grade in decimals?\n";
     cin >> tempWeight;
 
-    for (const auto& grade : container) {
-        finalGrade += (grade.grade * grade.weight);
+    for (const auto& category : container) {
+        double sum = 0;
+
+        for (double grade : category.grades) {
+            sum += grade;
+        }
+
+        double average = sum / category.grades.size();
+
+        finalGrade += average * category.weight;
     }
 
     goal = (target - finalGrade) / tempWeight;
 
+    char YN;
+    
     cout << "Implement curves? (Y/N)\n";
-    cin >> YN;
-
-    if (YN == 'Y' || YN == 'y') {
-        function3(finalGrade, target, tempWeight);
-    } else {
-        cout << "Min final score: " << fixed << setprecision(2) <<  goal << endl;
-    }
+    
+    while (cin >> YN) {
+        if (toupper(static_cast<unsigned char>(YN)) == 'Y') {
+            cout << "You said yes to curve!";
+            //function3(finalGrade, target, tempWeight);
+            break;
+        } else if (toupper(static_cast<unsigned char>(YN)) == 'N') {
+            cout << "Min final score: " << fixed << setprecision(2) <<  goal << endl;
+            break;
+        } else {
+            cout << "You didn't press a Y or N, please try again\n";
+        }
+    }   
 
 }
 
+/*
 void function3(double finalGrade, double target, double tempWeight) {
     double goal;
     int curve;
@@ -156,5 +204,5 @@ void function3(double finalGrade, double target, double tempWeight) {
 
     cout << "Min final score: " << fixed << setprecision(2) << goal << endl;
 }
-
 */
+
